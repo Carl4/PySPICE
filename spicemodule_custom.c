@@ -111,25 +111,28 @@ PyObject * spice_getelm(PyObject *self, PyObject *args)
   char * line1;
   char * line2;
   char * f_lines;
+  size_t bufsize;
 
   double elems[10];
   double epoch;
 
   char failed = 0;
 
-  PYSPICE_CHECK_RETURN_STATUS(PyArg_ParseTuple(args, "l(s#s#)",
-		  &firstyr, &line1, &line1_len, &line2, &line2_len));
+  PYSPICE_CHECK_RETURN_STATUS(PyArg_ParseTuple(args, "l(ss)",
+		  &firstyr, &line1, &line2));
 
   // How to properly allocate memory??  Am I allowed to use malloc?
   // See: http://article.gmane.org/gmane.comp.python.general/424736
-  f_lines = (char*) PyMem_Malloc(5+line1_len+line2_len);
+  line1_len = strlen(line1);
+  line2_len = strlen(line2);
   
+  bufsize = (size_t) 2 + line1_len + line2_len;
+  f_lines = PyMem_Malloc(bufsize);  
+
   if (f_lines == NULL) {
-    printf("Tried to allocate %d bytes\n", 5+line1_len+line2_len);
     return PyErr_NoMemory();
   }
 
-  
   // Offset to the start of the second line.
   lineln = line1_len+2;
   // Add 1 to line_len to be sure we copy the null too.
