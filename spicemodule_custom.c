@@ -136,11 +136,8 @@ PyObject * spice_getelm(PyObject *self, PyObject *args)
   // Offset to the start of the second line.
   lineln = line1_len+2;
   // Add 1 to line_len to be sure we copy the null too.
-  printf("About to do strncopying.\n");
   strncpy(f_lines, line1, line1_len+2);
-  printf("One down, one to go!\n");
   strncpy(f_lines+lineln, line2, line2_len+2);
-  printf("Done strncopying.\n");
   getelm_c(firstyr, lineln, f_lines, &epoch, elems);
  
   PyMem_Free(f_lines);
