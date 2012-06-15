@@ -100,7 +100,7 @@ spice_custom = Extension(
     libraries = ['cspice'],
     include_dirs=[os.path.join(CSPICE_SRC, 'include'),],
     library_dirs=[os.path.join(CSPICE_SRC, 'lib'),],
-    define_macros=[('MSDOS', None), 
+    define_macros=[#('MSDOS', None), 
                    ('_COMPLEX_DEFINED', None),
                    ('OMIT_BLANK_CC', None)],
 )

@@ -122,19 +122,28 @@ PyObject * spice_getelm(PyObject *self, PyObject *args)
 
   // How to properly allocate memory??  Am I allowed to use malloc?
   // See: http://article.gmane.org/gmane.comp.python.general/424736
-  f_lines = (char*) PyMem_Malloc(2+line1_len+line2_len);
+  f_lines = (char*) PyMem_Malloc(5+line1_len+line2_len);
+  
+  if (f_lines == NULL) {
+    printf("Tried to allocate %d bytes\n", 5+line1_len+line2_len);
+    return PyErr_NoMemory();
+  }
+
+  
   // Offset to the start of the second line.
-  lineln = line1_len+1;
+  lineln = line1_len+2;
   // Add 1 to line_len to be sure we copy the null too.
-  strncpy(f_lines, line1, line1_len+1);
-  strncpy(f_lines+lineln, line2, line2_len+1);
-
+  printf("About to do strncopying.\n");
+  strncpy(f_lines, line1, line1_len+2);
+  printf("One down, one to go!\n");
+  strncpy(f_lines+lineln, line2, line2_len+2);
+  printf("Done strncopying.\n");
   getelm_c(firstyr, lineln, f_lines, &epoch, elems);
-
+ 
   PyMem_Free(f_lines);
 
   PYSPICE_CHECK_FAILED;
-
+  
   if(failed) {
     return NULL;
   }
