@@ -84,6 +84,9 @@ exclude_list = (
     'gfevnt_c', 'gffove_c', 'gfocce_c', 'gfuds_c', 'uddc_c', 'uddf_c',
 )
 
+custom_list = ('spkw10_c', 'getelm_c',
+               )
+
 module_defs = []
 cspice_src = None
 
@@ -200,8 +203,9 @@ def get_doc(function_name):
 
     return '"%s"' % doc.getvalue()
 
-def gen_wrapper(prototype, buffer):
-    prototype = remove_extra_spaces(prototype)
+def gen_function(prototype_obj, prototype_comment, python_function_name, buffer):
+    # declare the function for this wrapper
+    
     manually_build_returnVal = False
     input_list = []
     input_name_list = []
@@ -216,37 +220,12 @@ def gen_wrapper(prototype, buffer):
     # likely STRING_LEN above).
     string_output_num = 0
 
-    # parse up the given prototype into its fundamental pieces.  this function
-    # returns a container object with all the information parsed up.
-    prototype_obj = parse_prototype(prototype)
-
-    # check the exclude list before continuing
-    if prototype_obj.function_name in exclude_list: return False
 
     # the string that is passed to PyArg_ParseTuple for getting the
     # arguments list and Py_BuildValue for returning results
     parse_tuple_string = ""
     buildvalue_string = ""
 
-    # remove the _c suffix for the python function name
-    python_function_name = prototype_obj.function_name.rsplit('_c',1)[0]
-
-    # Add the C function prototype to the source code output.
-    t = '/* %s */' % prototype
-    prototype_comment_list = []
-    while len(t) > 80:
-        count = 79
-        while t[count-1] != ',' and count > 1:
-            count -= 1
-
-        prototype_comment_list.append(t[:count])
-        t = t[count:]
-    if t:
-        prototype_comment_list.append(t)
-
-    prototype_comment = '\n'.join(prototype_comment_list)
-
-    # declare the function for this wrapper
     buffer.write(
         "\n%s\nstatic PyObject * spice_%s(PyObject *self, PyObject *args)\n{" % \
         (prototype_comment, python_function_name));
@@ -534,7 +513,44 @@ def gen_wrapper(prototype, buffer):
         pass # for now; TODO: figure out what to do
 
     buffer.write("\n}");
+    return python_function_name
 
+
+def gen_wrapper(prototype, buffer):
+    prototype = remove_extra_spaces(prototype)
+
+
+    # parse up the given prototype into its fundamental pieces.  this function
+    # returns a container object with all the information parsed up.
+    prototype_obj = parse_prototype(prototype)
+
+    # remove the _c suffix for the python function name
+    python_function_name = prototype_obj.function_name.rsplit('_c',1)[0]
+
+
+    # check the exclude list before continuing
+    if (prototype_obj.function_name in exclude_list and 
+        prototype_obj.function_name not in custom_list ): return False
+
+    # Add the C function prototype to the source code output.
+    t = '/* %s */' % prototype
+    prototype_comment_list = []
+    while len(t) > 80:
+        count = 79
+        while t[count-1] != ',' and count > 1:
+            count -= 1
+
+        prototype_comment_list.append(t[:count])
+        t = t[count:]
+    if t:
+        prototype_comment_list.append(t)
+
+    prototype_comment = '\n'.join(prototype_comment_list)
+
+
+    if prototype_obj.function_name not in custom_list:
+        gen_function(prototype_obj, prototype_comment, python_function_name, buffer, )              
+    
     # dig out the function name from the source file
     doc = get_doc(prototype_obj.function_name)
 

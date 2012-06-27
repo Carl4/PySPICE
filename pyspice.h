@@ -12,6 +12,8 @@
 
 #include <stdio.h>
 
+#include "spicemodule_custom.h"
+
 #ifndef __PYSPICE_H__
 #define __PYSPICE_H__ 1
 

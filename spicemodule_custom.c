@@ -7,6 +7,7 @@
 
 #include "pyspice.h"
 #include <string.h>
+#include "spicemodule_custom.h"
 
 PyObject *SpiceException;
 
@@ -14,7 +15,7 @@ PyObject *SpiceException;
 ConstSpiceChar * frame,SpiceDouble first,SpiceDouble last,
 ConstSpiceChar * segid,ConstSpiceDouble consts [8],SpiceInt n,
 ConstSpiceDouble elems [],ConstSpiceDouble epochs [] ); */
-static PyObject * spice_spkw10(PyObject *self, PyObject *args)
+PyObject * spice_spkw10(PyObject *self, PyObject *args)
 {
   /* variables for inputs */
   long handle;
@@ -101,7 +102,7 @@ PyDoc_STRVAR(spkw10_doc, "-Abstract\n\n   Write an SPK type 10 segment to the DA
                    const void     * lines,
                    SpiceDouble    * epoch,
                    SpiceDouble    * elems   ) */
-static PyObject * spice_getelm(PyObject *self, PyObject *args)
+PyObject * spice_getelm(PyObject *self, PyObject *args)
 {
   /* variables for inputs */
   long firstyr;
