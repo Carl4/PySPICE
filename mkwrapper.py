@@ -528,7 +528,7 @@ def gen_wrapper(prototype, buffer):
     python_function_name = prototype_obj.function_name.rsplit('_c',1)[0]
 
 
-    # check the exclude list before continuing
+    # check the exclude list before continuing.  
     if (prototype_obj.function_name in exclude_list and 
         prototype_obj.function_name not in custom_list ): return False
 
@@ -548,8 +548,13 @@ def gen_wrapper(prototype, buffer):
     prototype_comment = '\n'.join(prototype_comment_list)
 
 
+    # If it's not a custom command, add the function to the spicemodule.c output
     if prototype_obj.function_name not in custom_list:
         gen_function(prototype_obj, prototype_comment, python_function_name, buffer, )              
+    
+    # Custom commands still get a doc string and module_defs.  I tried making 
+    # them separate modules, but the static linking of cspice meant that modules
+    # furnsh'd under one module were not available under the custom module. 
     
     # dig out the function name from the source file
     doc = get_doc(prototype_obj.function_name)
