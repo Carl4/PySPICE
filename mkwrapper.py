@@ -205,6 +205,8 @@ def get_doc(function_name):
 
 def gen_function(prototype_obj, prototype_comment, python_function_name, buffer):
     # declare the function for this wrapper
+    # I moved this block of code to a separate function for readability.  It's 
+    # still pretty cumbersome, but hey! it works.  
     
     manually_build_returnVal = False
     input_list = []
