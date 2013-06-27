@@ -15,6 +15,26 @@ there, run setup.py like so::
 Then install::
 
   python setup.py install
+  
+Windows Instructions
+--------------------
+
+It seems that cspice neesds to be rebuilt to work with common Windows Python 
+code bases.  To accomplish this::
+
+1. Download the cygwin gCC 32bit Windows Spice toolkit here 
+   http://naif.jpl.nasa.gov/naif/toolkit_C.html
+2. Extract the file into the PySpice folder.  This will create
+   a cspice folder right next to spice and tests.
+3. Delete cspice\lib\*  We need to re-build these for your platform.
+3. Run mkproduct_cspice.bat with a build environment that supports 
+   your python distribution.  If you don't do much development, but 
+   have Enthoguht Python (EPD or Canopy), this appears to just work.
+4. Run `python setup.py build_ext -c mingw32`  
+   THE `-c mingw32` is VERY important!
+5. 
+
+
 
 64 bit vs 32 bit
 ----------------
